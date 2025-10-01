@@ -18,8 +18,8 @@ extern int cursor;
 extern bool selected;
 
 // Function declarations
-void menuLogic();
+int menuLogic();
 int menuUpDown(int keys, int cursor);
-void waitMilliseconds(int ms);
+
 
 #endif // MENU_H

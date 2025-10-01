@@ -24,19 +24,30 @@ int main(void) {
         scanKeys();
         keys = keysDown();
         
-        // Menu logic
-        menuLogic();
-        
-
-
-        
-        // Handle input
-        if (keys & KEY_A) { // A Key Selects current menu item
+        // Handle input first
+        if (keys & KEY_A) { // A Key Selects current menu item (only if not already selected)
             selected = true;
-        } else { // handle any other key besides A
-            if (selected == false) { // we don't want to move the cursor if its not shown
-                cursor = menuUpDown(keys, cursor);
-            }
+        } else if (!selected) { // handle movement only when not selected
+            cursor = menuUpDown(keys, cursor);
+        }
+        
+        // Menu logic
+        int mode = menuLogic();
+        switch (mode) {
+            case 1://start game
+                // Add start game logic here
+                break;
+            case 2://reset
+                // Add reset logic here
+                break;
+            case 3://1 player mode
+
+                break;
+            case 4://2 player mode
+                iprintf("\n\n2 Player Mode");
+                break;
+            default:
+                break;  
         }
     }
 }
