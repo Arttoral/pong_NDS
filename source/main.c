@@ -26,6 +26,26 @@ int main(void) {
     //paddle speed
     const int paddleSpeed = 3;
 
+    // Setting up the top screen
+    videoSetMode(MODE_0_2D);
+    vramSetBankA(VRAM_A_MAIN_BG);
+
+    int topBg = bgInit(3, BgType_Text8bpp, BgSize_T_256x256, 0, 1);
+
+    dmaCopy(topTiles, bgGetGfxPtr(topBg), topTilesLen);
+    dmaCopy(topMap, bgGetMapPtr(topBg), topMapLen);
+    dmaCopy(topPal, BG_PALETTE, topPalLen);
+
+    // Setting up the bottom screen
+    videoSetModeSub(MODE_0_2D);
+    vramSetBankC(VRAM_C_SUB_BG);
+
+    int bottomBg = bgInitSub(3, BgType_Text8bpp, BgSize_T_256x256, 2, 3); //need to set the indices to different numbers so they don't overwrite
+
+    dmaCopy(bottomTiles, bgGetGfxPtr(bottomBg), bottomTilesLen);
+    dmaCopy(bottomMap, bgGetMapPtr(bottomBg), bottomMapLen);
+    dmaCopy(bottomPal, BG_PALETTE_SUB, bottomPalLen);
+
     
     while (1) {
         swiWaitForVBlank();
