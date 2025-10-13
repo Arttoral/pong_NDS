@@ -2,7 +2,10 @@
 #include <stdio.h>
 #include "menu.h"
 #include "sprites.h"
+#include <maxmod9.h>
 
+#include "soundbank.h"
+#include "soundbank_bin.h"
 
 
 // Declare console object for sub screen
@@ -13,7 +16,10 @@ void basicGame(Rect *left, Rect *right, Ball *ball, int paddleSpeed, int keys, i
 int main(void) {
     // Initialize graphics
     initDS();
-    
+    mmInitDefaultMem((mm_addr)soundbank_bin);
+    mmLoad( MOD_PONGSONGTHEMETEST );
+    mmStart( MOD_PONGSONGTHEMETEST, MM_PLAY_LOOP );
+
     // Initialize console on sub screen
     consoleInit(&consoleSub, 3, BgType_Text4bpp, BgSize_T_256x256, 31, 0, false, true);
     consoleSelect(&consoleSub); // Make this console active for iprintf
