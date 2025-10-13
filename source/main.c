@@ -33,16 +33,12 @@ int main(void) {
         int held = keysHeld();
         keys = keysDown();
 
-        basicGame(&left, &right, &ball, paddleSpeed, keys, held);
-
-        
         // Handle input first
         if (keys & KEY_A) { // A Key Selects current menu item (only if not already selected)
             selected = true;
         } else if (!selected) { // handle movement only when not selected
             cursor = menuUpDown(keys, cursor);
         }
-        
         // Clear console before menu display
         consoleClear();
         
@@ -56,10 +52,32 @@ int main(void) {
         int mode = menuLogic();
         switch (mode) {
             case 1://start game
-                
+                while(1) {
+                    consoleClear();
+                    iprintf("Game Start!\n");
+                    iprintf("Press B to cancel\n");
+                    swiWaitForVBlank();
+                    scanKeys();
+                    basicGame(&left, &right, &ball, paddleSpeed, keys, held);
+                    if(keysDown() & KEY_B) break;
+                }
                 break;
             case 2://reset
-                // Add reset logic here
+                 // 2 seconds at 60fps
+                    consoleClear();
+                    iprintf("Resetting...\n");
+                    iprintf("Press A to cancel\n");
+                    swiWaitForVBlank();
+                    ball.x = SCREEN_WIDTH/2;
+                    ball.y = SCREEN_HEIGHT/2;
+                    ball.vx = 2;
+                    ball.vy = 2;
+                    left.y = (SCREEN_HEIGHT/2) - 24;
+                    right.y = (SCREEN_HEIGHT/2) - 24;
+                    basicGame(&left, &right, &ball, paddleSpeed, keys, held);
+                for(int countdown = 120; countdown > 0; countdown--) {
+                    swiWaitForVBlank();
+                }
                 break;
             case 3://1 player mode
 
@@ -76,7 +94,8 @@ int main(void) {
 
 
 void basicGame(Rect *left, Rect *right, Ball *ball, int paddleSpeed, int keys, int held) {
-        
+        keys = keysDown();
+        held = keysHeld();
         //move paddle based on key pressed: up down moves left and W S moves right paddle
         if (held & KEY_UP)    left->y  -= paddleSpeed;
         if (held & KEY_DOWN)  left->y  += paddleSpeed;

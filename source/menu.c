@@ -24,49 +24,15 @@ int menuLogic() {
         consoleClear();
         switch(cursor) {
             case 0:
-                // Show start game message for 3 seconds or until B is pressed
-                for(int countdown = 180; countdown > 0; countdown--) { // 3 seconds at 60fps
-                    consoleClear();
-                    iprintf("Starting Game...\n");
-                    iprintf("Press B to cancel\n");
-                    swiWaitForVBlank();
-                    scanKeys();
-                    if(keysDown() & KEY_B) break;
-                }
                 choice = 1;
                 break;
             case 1:
                 // Show reset message for 2 seconds or until B is pressed
-                for(int countdown = 120; countdown > 0; countdown--) { // 2 seconds at 60fps
-                    consoleClear();
-                    iprintf("Resetting...\n");
-                    iprintf("Press B to cancel\n");
-                    swiWaitForVBlank();
-                    scanKeys();
-                    if(keysDown() & KEY_B) break;
-                }
                 choice = 2;
                 break;
             case 2:
                 // Show mode change message for 2 seconds or until B is pressed
-                for(int countdown = 120; countdown > 0; countdown--) { // 2 seconds at 60fps
-                    consoleClear();
-                    iprintf("Changing Mode...\n");
-                    iprintf("Press A for Slow\n");
-                    iprintf("Press B for Fast\n");
-                    iprintf("Press nothing to cancel\n");
-                    swiWaitForVBlank();
-                    scanKeys();
-                    keys = keysDown();
-                    if(keys & KEY_A) { 
-                        choice = 3;
-                        break;
-                    }
-                    if(keys & KEY_B) { 
-                        choice = 4;
-                        break;
-                    }
-                }
+                
                 break;
         }
         selected = false; // reset selection after action
