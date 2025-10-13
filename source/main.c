@@ -32,6 +32,7 @@ int main(void) {
     //paddle speed
     const int paddleSpeed = 3;
 
+    /* TODO: Add background graphics
     // Setting up the top screen
     videoSetMode(MODE_0_2D);
     vramSetBankA(VRAM_A_MAIN_BG);
@@ -51,6 +52,7 @@ int main(void) {
     dmaCopy(bottomTiles, bgGetGfxPtr(bottomBg), bottomTilesLen);
     dmaCopy(bottomMap, bgGetMapPtr(bottomBg), bottomMapLen);
     dmaCopy(bottomPal, BG_PALETTE_SUB, bottomPalLen);
+    */
 
     
     while (1) {
