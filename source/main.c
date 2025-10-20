@@ -11,6 +11,10 @@
 // Declare console object for sub screen
 PrintConsole consoleSub;
 
+// Score globals (defined here to satisfy externs in menu.h)
+int leftScore = 0;
+int rightScore = 0;
+
 void basicGame(Rect *left, Rect *right, Ball *ball, int paddleSpeed, int keys, int held);
 
 int main(void) {
@@ -84,10 +88,12 @@ int main(void) {
                     consoleClear();
                     iprintf("Game Start!\n");
                     iprintf("Press B to cancel\n");
+                    iprintf("Right: %d\n", rightScore);
+                    iprintf("Left: %d\n", leftScore);
                     swiWaitForVBlank();
                     scanKeys();
                     basicGame(&left, &right, &ball, paddleSpeed, keys, held);
-                    if(keysDown() & KEY_B) break;
+                    if(keysDown() & KEY_Y) break;
                 }
                 break;
             case 2://reset
@@ -95,6 +101,8 @@ int main(void) {
                     consoleClear();
                     iprintf("Resetting...\n");
                     iprintf("Press A to cancel\n");
+                    rightScore = 0;
+                    leftScore = 0;
                     swiWaitForVBlank();
                     ball.x = SCREEN_WIDTH/2;
                     ball.y = SCREEN_HEIGHT/2;
@@ -107,10 +115,10 @@ int main(void) {
                     swiWaitForVBlank();
                 }
                 break;
-            case 3://1 player mode
+            case 3://Lowspeed
 
                 break;
-            case 4://2 player mode
+            case 4://Highspeed
                 iprintf("\n\n2 Player Mode");
                 break;
             default:
@@ -125,10 +133,10 @@ void basicGame(Rect *left, Rect *right, Ball *ball, int paddleSpeed, int keys, i
         keys = keysDown();
         held = keysHeld();
         //move paddle based on key pressed: up down moves left and W S moves right paddle
-        if (held & KEY_UP)    left->y  -= paddleSpeed;
-        if (held & KEY_DOWN)  left->y  += paddleSpeed;
-        if (held & KEY_X)     right->y -= paddleSpeed;
-        if (held & KEY_B)     right->y += paddleSpeed;
+        if ((held & KEY_UP) && left->y >0)    left->y  -= paddleSpeed;
+        if ((held & KEY_DOWN) && left->y +left->h < SCREEN_HEIGHT)  left->y  += paddleSpeed;
+        if ((held & KEY_X) && right->y > 0)     right->y -= paddleSpeed;
+        if ((held & KEY_B)&& right->y + right->h < SCREEN_HEIGHT)     right->y += paddleSpeed;
 
         //ball moves
         ball->x += ball->vx;
@@ -153,6 +161,12 @@ void basicGame(Rect *left, Rect *right, Ball *ball, int paddleSpeed, int keys, i
 
         // If ball goes past a paddle, reset to center
         if (ball->x < -ball->r || ball->x > SCREEN_WIDTH + ball->r) {
+            if(ball->x < -ball->r) {
+                rightScore++;
+            }
+            if(ball->x > SCREEN_WIDTH + ball->r) {
+                leftScore++;
+            }
             ball->x = SCREEN_WIDTH/2;
             ball->y = SCREEN_HEIGHT/2;
              ball->vx = (ball->vx < 0) ? 2 : -2; // flip serve

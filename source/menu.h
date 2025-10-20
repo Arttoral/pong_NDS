@@ -10,7 +10,10 @@ struct menuItem {
     int count;
 };
 
+
 // Global menu variables
+extern int leftScore;
+extern int rightScore;
 extern struct menuItem items[];
 extern int keys;
 extern int itemCount;
