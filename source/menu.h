@@ -3,6 +3,7 @@
 
 #include <nds.h>
 #include <stdio.h>
+#include "sprites.h"
 
 // Menu item structure
 struct menuItem {
@@ -19,9 +20,10 @@ extern int keys;
 extern int itemCount;
 extern int cursor;
 extern bool selected;
+extern int speed;
 
 // Function declarations
-int menuLogic();
+int menuLogic(Rect* left, Rect* right, Ball* ball);
 int menuUpDown(int keys, int cursor);
 
 

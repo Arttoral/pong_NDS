@@ -14,7 +14,7 @@ PrintConsole consoleSub;
 // Score globals (defined here to satisfy externs in menu.h)
 int leftScore = 0;
 int rightScore = 0;
-
+int speed = 2;
 void basicGame(Rect *left, Rect *right, Ball *ball, int paddleSpeed, int keys, int held);
 
 int main(void) {
@@ -31,7 +31,7 @@ int main(void) {
     //establish paddles and ball
     Rect left  =  { 8,  (SCREEN_HEIGHT/2) - 24, 8, 48 };
     Rect right =  { SCREEN_WIDTH - 16, (SCREEN_HEIGHT/2) - 24, 8, 48 };
-    Ball ball  =  { SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 5, 2, 2 };
+    Ball ball  =  { SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 5, speed, speed };
 
     //paddle speed
     const int paddleSpeed = 3;
@@ -74,21 +74,13 @@ int main(void) {
         // Clear console before menu display
         consoleClear();
         
-        // Reset cursor to ensure proper positioning
-        printf("\x1b[0;0H");
-        
-        // Add buffer line to prevent cutoff
-        iprintf("\n");
-        
         // Menu logic
-        int mode = menuLogic();
+        int mode = menuLogic(&left, &right, &ball);  // Pass addresses, not values
         switch (mode) {
             case 1://start game
                 while(1) {
                     consoleClear();
-                    iprintf("Game Start!\n");
-                    iprintf("Press B to cancel\n");
-                    iprintf("Right: %d\n", rightScore);
+                    iprintf("\nRight: %d\n", rightScore);
                     iprintf("Left: %d\n", leftScore);
                     swiWaitForVBlank();
                     scanKeys();
@@ -98,28 +90,23 @@ int main(void) {
                 break;
             case 2://reset
                  // 2 seconds at 60fps
-                    consoleClear();
-                    iprintf("Resetting...\n");
-                    iprintf("Press A to cancel\n");
-                    rightScore = 0;
-                    leftScore = 0;
-                    swiWaitForVBlank();
-                    ball.x = SCREEN_WIDTH/2;
-                    ball.y = SCREEN_HEIGHT/2;
-                    ball.vx = 2;
-                    ball.vy = 2;
-                    left.y = (SCREEN_HEIGHT/2) - 24;
-                    right.y = (SCREEN_HEIGHT/2) - 24;
-                    basicGame(&left, &right, &ball, paddleSpeed, keys, held);
+                basicGame(&left, &right, &ball, paddleSpeed, keys, held);
                 for(int countdown = 120; countdown > 0; countdown--) {
                     swiWaitForVBlank();
                 }
                 break;
-            case 3://Lowspeed
+            case 3: //Lowspeed
+                while(1) {
+                    scanKeys();
+                    held = keysHeld();
+                    keys = keysDown();          
+                    swiWaitForVBlank();
+                    iprintf("\x1b[5;1H\x1b[KCurrent Speed: %d", speed);
 
-                break;
-            case 4://Highspeed
-                iprintf("\n\n2 Player Mode");
+                    if ((keys & KEY_X) && speed < 9) {speed++;}
+                    if ((keys & KEY_Y) && speed > 1) {speed--;}
+                    if (keys & KEY_B) {break;}
+                }
                 break;
             default:
                 break;  
@@ -169,7 +156,7 @@ void basicGame(Rect *left, Rect *right, Ball *ball, int paddleSpeed, int keys, i
             }
             ball->x = SCREEN_WIDTH/2;
             ball->y = SCREEN_HEIGHT/2;
-             ball->vx = (ball->vx < 0) ? 2 : -2; // flip serve
+            ball->vx = (ball->vx < 0) ? speed : -speed; // flip serve
             ball->vy = 2;
         }
 

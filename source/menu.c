@@ -1,12 +1,11 @@
 #include "menu.h"
 
+
 // Menu items array
 struct menuItem items[] = {
     {"Start Game", 0},
     {"Reset", 1},
     {"Mode", 2},
-    {"Mode: Slow\n\n",  3}, // Added a non-selectable header for Mode
-
 };
 
 // Global menu variables
@@ -16,7 +15,7 @@ int cursor = 0;
 bool selected = false;
 
 
-int menuLogic() {
+int menuLogic(Rect *left, Rect *right, Ball *ball) {
     int choice = 0;
 
     // This goes through and if the item is selected, it performs the action    
@@ -25,30 +24,49 @@ int menuLogic() {
         switch(cursor) {
             case 0:
                 choice = 1;
+                ball->vx = speed;
+                ball->vy = speed;
+                consoleClear();
+                iprintf("\nGame Start!\n");
+                iprintf("Press Y to cancel\n");
+                for(int countdown = 120; countdown > 0; countdown--) {
+                    swiWaitForVBlank();
+                    scanKeys();
+                    if(keysDown() & KEY_Y) {
+                        choice = 0; 
+                        break;
+                    }
+                }
                 break;
             case 1:
-                // Show reset message for 2 seconds or until B is pressed
+                // Now these modify the ACTUAL game objects
                 choice = 2;
+                ball->x = SCREEN_WIDTH/2;
+                ball->y = SCREEN_HEIGHT/2;
+                speed = 2;
+                left->y = (SCREEN_HEIGHT/2) - 24;
+                right->y = (SCREEN_HEIGHT/2) - 24;
+                consoleClear();
+                iprintf("Resetting...\n");
+                iprintf("Press A to cancel\n");
                 break;
             case 2:
                 // Show mode change message for 2 seconds or until B is pressed
-                
+                choice = 3;
+                consoleClear();
+                iprintf("Press X to increase speed, press Y to decrease.\n");
+                iprintf("Press B to quit.\n");
                 break;
         }
         selected = false; // reset selection after action
-    }
 
-    // Display normal menu when not selected
-    if(choice == 3) {
-        items[3].name = "Mode: Slow\n\n";
-    } else if (choice == 4) {
-        items[3].name = "Mode: Fast\n\n";
-    }
-    iprintf("%s", items[3].name); // Always show the Mode header
-    for (int x = 0; x < itemCount; x++) {
-        // Basically writes all the menu items to the screen
-        char cursorChar = (x == cursor) ? '>' : ' ';
-        iprintf("%c %s\n\n", cursorChar, items[x].name);
+    } else {
+        // Display normal menu when not selected
+        for (int x = 0; x < itemCount; x++) {
+            // Basically writes all the menu items to the screen
+            char cursorChar = (x == cursor) ? '>' : ' ';
+            iprintf("%c %s\n\n", cursorChar, items[x].name);
+        }
     }
 
     return choice;
