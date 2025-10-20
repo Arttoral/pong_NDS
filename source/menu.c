@@ -6,6 +6,7 @@ struct menuItem items[] = {
     {"Start Game", 0},
     {"Reset", 1},
     {"Mode", 2},
+    {"Bounce", 3}
 };
 
 // Global menu variables
@@ -73,12 +74,12 @@ int menuLogic(Rect *left, Rect *right, Ball *ball) {
 }
 
 int menuUpDown(int keys, int cursor) {
-    if (keys & KEY_L) { // Changed to LEFT/RIGHT so that other keys can be used for gameplay. 
+    if (keys & KEY_UP) { // Changed to LEFT/RIGHT so that other keys can be used for gameplay. 
         cursor--;
         if (cursor < 0) {
             cursor = 2;
         }
-    } else if (keys & KEY_R) {
+    } else if (keys & KEY_DOWN) {
         cursor++;
         if (cursor > 2) {
             cursor = 0;

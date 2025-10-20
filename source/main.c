@@ -79,9 +79,8 @@ int main(void) {
         switch (mode) {
             case 1://start game
                 while(1) {
-                    consoleClear();
-                    iprintf("\nRight: %d\n", rightScore);
-                    iprintf("Left: %d\n", leftScore);
+                    iprintf("\x1b[5;1H\x1b[KRight: %d\n", rightScore);
+                    iprintf("\x1b[8;1H\x1b[KLeft: %d\n", leftScore);
                     swiWaitForVBlank();
                     scanKeys();
                     basicGame(&left, &right, &ball, paddleSpeed, keys, held);
